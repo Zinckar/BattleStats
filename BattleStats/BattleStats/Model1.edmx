@@ -1,0 +1,568 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BattleStatsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="duel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="duel_round">
+          <Key>
+            <PropertyRef Name="duel_id" />
+            <PropertyRef Name="round_id" />
+          </Key>
+          <Property Name="duel_id" Type="int" Nullable="false" />
+          <Property Name="round_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="hero">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="fullName" Type="nvarchar" MaxLength="50" />
+          <Property Name="upperName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="hero_duel">
+          <Key>
+            <PropertyRef Name="hero_id" />
+            <PropertyRef Name="duel_id" />
+          </Key>
+          <Property Name="hero_id" Type="int" Nullable="false" />
+          <Property Name="duel_id" Type="int" Nullable="false" />
+          <Property Name="heroNum" Type="int" />
+        </EntityType>
+        <EntityType Name="round">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="num" Type="int" Nullable="false" />
+          <Property Name="p1style" Type="nvarchar" MaxLength="50" />
+          <Property Name="p1base" Type="nvarchar" MaxLength="50" />
+          <Property Name="p1hp" Type="int" />
+          <Property Name="p2style" Type="nvarchar" MaxLength="50" />
+          <Property Name="p2base" Type="nvarchar" MaxLength="50" />
+          <Property Name="p2hp" Type="int" />
+          <Property Name="result" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BattleStats.dbo.allView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="allView">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WinRate" Type="int" />
+          <Property Name="Wins" Type="int" />
+          <Property Name="Draws" Type="int" />
+          <Property Name="Losses" Type="int" />
+          <Property Name="Rounds" Type="int" />
+          <Property Name="avgRounds" Type="int" />
+          <Property Name="avgWinRound" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BattleStats.dbo.viewRounds' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="viewRounds">
+          <Key>
+            <PropertyRef Name="name" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Rounds" Type="int" />
+          <Property Name="avgRounds" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BattleStats.dbo.winrateView' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="winrateView">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WinRate" Type="int" />
+          <Property Name="Wins" Type="int" />
+          <Property Name="Draws" Type="int" />
+          <Property Name="Losses" Type="int" />
+          <Property Name="Rounds" Type="int" />
+          <Property Name="avgRounds" Type="int" />
+        </EntityType>
+        <Association Name="FK_duel_round_duel">
+          <End Role="duel" Type="Self.duel" Multiplicity="1" />
+          <End Role="duel_round" Type="Self.duel_round" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="duel">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="duel_round">
+              <PropertyRef Name="duel_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_duel_round_round">
+          <End Role="round" Type="Self.round" Multiplicity="1" />
+          <End Role="duel_round" Type="Self.duel_round" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="round">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="duel_round">
+              <PropertyRef Name="round_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hero_duel_duel">
+          <End Role="duel" Type="Self.duel" Multiplicity="1" />
+          <End Role="hero_duel" Type="Self.hero_duel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="duel">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="hero_duel">
+              <PropertyRef Name="duel_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hero_duel_hero">
+          <End Role="hero" Type="Self.hero" Multiplicity="1" />
+          <End Role="hero_duel" Type="Self.hero_duel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="hero">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="hero_duel">
+              <PropertyRef Name="hero_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="BattleStatsModelStoreContainer">
+          <EntitySet Name="duel" EntityType="Self.duel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="duel_round" EntityType="Self.duel_round" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="hero" EntityType="Self.hero" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="hero_duel" EntityType="Self.hero_duel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="round" EntityType="Self.round" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="allView" EntityType="Self.allView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [allView].[Name] AS [Name], 
+    [allView].[WinRate] AS [WinRate], 
+    [allView].[Wins] AS [Wins], 
+    [allView].[Draws] AS [Draws], 
+    [allView].[Losses] AS [Losses], 
+    [allView].[Rounds] AS [Rounds], 
+    [allView].[avgRounds] AS [avgRounds], 
+    [allView].[avgWinRound] AS [avgWinRound]
+    FROM [dbo].[allView] AS [allView]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="viewRounds" EntityType="Self.viewRounds" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [viewRounds].[name] AS [name], 
+    [viewRounds].[Rounds] AS [Rounds], 
+    [viewRounds].[avgRounds] AS [avgRounds]
+    FROM [dbo].[viewRounds] AS [viewRounds]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="winrateView" EntityType="Self.winrateView" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [winrateView].[Name] AS [Name], 
+    [winrateView].[WinRate] AS [WinRate], 
+    [winrateView].[Wins] AS [Wins], 
+    [winrateView].[Draws] AS [Draws], 
+    [winrateView].[Losses] AS [Losses], 
+    [winrateView].[Rounds] AS [Rounds], 
+    [winrateView].[avgRounds] AS [avgRounds]
+    FROM [dbo].[winrateView] AS [winrateView]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_duel_round_duel" Association="Self.FK_duel_round_duel">
+            <End Role="duel" EntitySet="duel" />
+            <End Role="duel_round" EntitySet="duel_round" />
+          </AssociationSet>
+          <AssociationSet Name="FK_duel_round_round" Association="Self.FK_duel_round_round">
+            <End Role="round" EntitySet="round" />
+            <End Role="duel_round" EntitySet="duel_round" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hero_duel_duel" Association="Self.FK_hero_duel_duel">
+            <End Role="duel" EntitySet="duel" />
+            <End Role="hero_duel" EntitySet="hero_duel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hero_duel_hero" Association="Self.FK_hero_duel_hero">
+            <End Role="hero" EntitySet="hero" />
+            <End Role="hero_duel" EntitySet="hero_duel" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BattleStatsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="duel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="hero_duel" Relationship="Self.FK_hero_duel_duel" FromRole="duel" ToRole="hero_duel" />
+          <NavigationProperty Name="round" Relationship="Self.duel_round" FromRole="duel" ToRole="round" />
+        </EntityType>
+        <EntityType Name="hero">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="fullName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="upperName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="hero_duel" Relationship="Self.FK_hero_duel_hero" FromRole="hero" ToRole="hero_duel" />
+        </EntityType>
+        <EntityType Name="hero_duel">
+          <Key>
+            <PropertyRef Name="hero_id" />
+            <PropertyRef Name="duel_id" />
+          </Key>
+          <Property Name="hero_id" Type="Int32" Nullable="false" />
+          <Property Name="duel_id" Type="Int32" Nullable="false" />
+          <Property Name="heroNum" Type="Int32" />
+          <NavigationProperty Name="duel" Relationship="Self.FK_hero_duel_duel" FromRole="hero_duel" ToRole="duel" />
+          <NavigationProperty Name="hero" Relationship="Self.FK_hero_duel_hero" FromRole="hero_duel" ToRole="hero" />
+        </EntityType>
+        <EntityType Name="round">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="num" Type="Int32" Nullable="false" />
+          <Property Name="p1style" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="p1base" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="p1hp" Type="Int32" />
+          <Property Name="p2style" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="p2base" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="p2hp" Type="Int32" />
+          <Property Name="result" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="duel" Relationship="Self.duel_round" FromRole="round" ToRole="duel" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="allView">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WinRate" Type="Int32" />
+          <Property Name="Wins" Type="Int32" />
+          <Property Name="Draws" Type="Int32" />
+          <Property Name="Losses" Type="Int32" />
+          <Property Name="Rounds" Type="Int32" />
+          <Property Name="avgRounds" Type="Int32" />
+          <Property Name="avgWinRound" Type="Int32" />
+        </EntityType>
+        <EntityType Name="viewRounds">
+          <Key>
+            <PropertyRef Name="name" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Rounds" Type="Int32" />
+          <Property Name="avgRounds" Type="Int32" />
+        </EntityType>
+        <EntityType Name="winrateView">
+          <Key>
+            <PropertyRef Name="Name" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="WinRate" Type="Int32" />
+          <Property Name="Wins" Type="Int32" />
+          <Property Name="Draws" Type="Int32" />
+          <Property Name="Losses" Type="Int32" />
+          <Property Name="Rounds" Type="Int32" />
+          <Property Name="avgRounds" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_hero_duel_duel">
+          <End Role="duel" Type="Self.duel" Multiplicity="1" />
+          <End Role="hero_duel" Type="Self.hero_duel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="duel">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="hero_duel">
+              <PropertyRef Name="duel_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_hero_duel_hero">
+          <End Role="hero" Type="Self.hero" Multiplicity="1" />
+          <End Role="hero_duel" Type="Self.hero_duel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="hero">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="hero_duel">
+              <PropertyRef Name="hero_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="duel_round">
+          <End Role="duel" Type="Self.duel" Multiplicity="*" />
+          <End Role="round" Type="Self.round" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="BattleStatsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="duel" EntityType="Self.duel" />
+          <EntitySet Name="hero" EntityType="Self.hero" />
+          <EntitySet Name="hero_duel" EntityType="Self.hero_duel" />
+          <EntitySet Name="round" EntityType="Self.round" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="allView" EntityType="Self.allView" />
+          <EntitySet Name="viewRounds" EntityType="Self.viewRounds" />
+          <EntitySet Name="winrateView" EntityType="Self.winrateView" />
+          <AssociationSet Name="FK_hero_duel_duel" Association="Self.FK_hero_duel_duel">
+            <End Role="duel" EntitySet="duel" />
+            <End Role="hero_duel" EntitySet="hero_duel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_hero_duel_hero" Association="Self.FK_hero_duel_hero">
+            <End Role="hero" EntitySet="hero" />
+            <End Role="hero_duel" EntitySet="hero_duel" />
+          </AssociationSet>
+          <AssociationSet Name="duel_round" Association="Self.duel_round">
+            <End Role="duel" EntitySet="duel" />
+            <End Role="round" EntitySet="round" />
+          </AssociationSet>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(BattleStatsModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(BattleStatsModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+        </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BattleStatsModelStoreContainer" CdmEntityContainer="BattleStatsEntities">
+          <EntitySetMapping Name="duel">
+            <EntityTypeMapping TypeName="BattleStatsModel.duel">
+              <MappingFragment StoreEntitySet="duel">
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="hero">
+            <EntityTypeMapping TypeName="BattleStatsModel.hero">
+              <MappingFragment StoreEntitySet="hero">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="fullName" ColumnName="fullName" />
+                <ScalarProperty Name="upperName" ColumnName="upperName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="hero_duel">
+            <EntityTypeMapping TypeName="BattleStatsModel.hero_duel">
+              <MappingFragment StoreEntitySet="hero_duel">
+                <ScalarProperty Name="hero_id" ColumnName="hero_id" />
+                <ScalarProperty Name="duel_id" ColumnName="duel_id" />
+                <ScalarProperty Name="heroNum" ColumnName="heroNum" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="round">
+            <EntityTypeMapping TypeName="BattleStatsModel.round">
+              <MappingFragment StoreEntitySet="round">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="num" ColumnName="num" />
+                <ScalarProperty Name="p1style" ColumnName="p1style" />
+                <ScalarProperty Name="p1base" ColumnName="p1base" />
+                <ScalarProperty Name="p1hp" ColumnName="p1hp" />
+                <ScalarProperty Name="p2style" ColumnName="p2style" />
+                <ScalarProperty Name="p2base" ColumnName="p2base" />
+                <ScalarProperty Name="p2hp" ColumnName="p2hp" />
+                <ScalarProperty Name="result" ColumnName="result" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="BattleStatsModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="allView">
+            <EntityTypeMapping TypeName="BattleStatsModel.allView">
+              <MappingFragment StoreEntitySet="allView">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="WinRate" ColumnName="WinRate" />
+                <ScalarProperty Name="Wins" ColumnName="Wins" />
+                <ScalarProperty Name="Draws" ColumnName="Draws" />
+                <ScalarProperty Name="Losses" ColumnName="Losses" />
+                <ScalarProperty Name="Rounds" ColumnName="Rounds" />
+                <ScalarProperty Name="avgRounds" ColumnName="avgRounds" />
+                <ScalarProperty Name="avgWinRound" ColumnName="avgWinRound" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="viewRounds">
+            <EntityTypeMapping TypeName="BattleStatsModel.viewRounds">
+              <MappingFragment StoreEntitySet="viewRounds">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Rounds" ColumnName="Rounds" />
+                <ScalarProperty Name="avgRounds" ColumnName="avgRounds" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="winrateView">
+            <EntityTypeMapping TypeName="BattleStatsModel.winrateView">
+              <MappingFragment StoreEntitySet="winrateView">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="WinRate" ColumnName="WinRate" />
+                <ScalarProperty Name="Wins" ColumnName="Wins" />
+                <ScalarProperty Name="Draws" ColumnName="Draws" />
+                <ScalarProperty Name="Losses" ColumnName="Losses" />
+                <ScalarProperty Name="Rounds" ColumnName="Rounds" />
+                <ScalarProperty Name="avgRounds" ColumnName="avgRounds" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="duel_round" TypeName="BattleStatsModel.duel_round" StoreEntitySet="duel_round">
+            <EndProperty Name="duel">
+              <ScalarProperty Name="id" ColumnName="duel_id" />
+            </EndProperty>
+            <EndProperty Name="round">
+              <ScalarProperty Name="id" ColumnName="round_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="BattleStatsModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="BattleStatsModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="BattleStatsModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="BattleStatsModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BattleStatsModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="BattleStatsModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="BattleStatsModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="BattleStatsModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="BattleStatsModel.Store.sp_upgraddiagrams" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
